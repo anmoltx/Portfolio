@@ -293,55 +293,77 @@ function initStatsCounter() {
 }
 
 /* ==========================================================================
-   8. SMART MULTI-FALLBACK CONTACT FORM HANDLER
+   8. WEB3FORMS REAL EMAIL INTEGRATION (Key: 4e316b92-4a19-4ea0-b064-fd98c5051fde)
    ========================================================================== */
-function handleFormSubmit() {
-  const nameInput = document.getElementById('name');
-  const emailInput = document.getElementById('email');
-  const subjectInput = document.getElementById('subject');
-  const messageInput = document.getElementById('message');
+async function handleFormSubmit() {
+  const form = document.getElementById('contactForm');
   const submitBtn = document.getElementById('submitBtn');
+  const formStatus = document.getElementById('formStatus');
 
-  const name = nameInput ? nameInput.value.trim() : '';
-  const email = emailInput ? emailInput.value.trim() : '';
-  const subject = subjectInput ? subjectInput.value.trim() : '';
-  const message = messageInput ? messageInput.value.trim() : '';
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const subject = document.getElementById('subject').value.trim();
+  const message = document.getElementById('message').value.trim();
 
   if (!name || !email || !subject || !message) {
     alert("Please fill out all required form fields.");
     return;
   }
 
-  const recipientEmail = "iamanmol0807@gmail.com";
-  const emailBodyText = `Name: ${name}\nSender Email: ${email}\n\nMessage:\n${message}`;
+  const originalBtnContent = submitBtn.innerHTML;
+  submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Delivering Message...`;
+  submitBtn.disabled = true;
+  if (formStatus) formStatus.innerHTML = '';
 
-  // 1. Direct Gmail Web Composer URL (Works on Desktop & Mobile Web without needing desktop Outlook/Mail app!)
-  const gmailWebUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${recipientEmail}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBodyText)}`;
+  try {
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        access_key: '4e316b92-4a19-4ea0-b064-fd98c5051fde',
+        name: name,
+        email: email,
+        subject: subject,
+        message: message
+      })
+    });
 
-  // 2. Standard mailto fallback
-  const mailtoUrl = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBodyText)}`;
+    const result = await response.json();
 
-  // Copy email to clipboard automatically
-  navigator.clipboard.writeText(recipientEmail).catch(() => {});
+    if (result.success) {
+      submitBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Sent to Inbox!`;
+      submitBtn.style.background = "#10b981";
 
-  // Update button state
-  const originalBtnHtml = submitBtn.innerHTML;
-  submitBtn.innerHTML = `<i class="fa-solid fa-check-circle"></i> Opening Email Composer...`;
-  submitBtn.style.background = "#10b981";
+      if (formStatus) {
+        formStatus.innerHTML = `
+          <div style="margin-top: 16px; padding: 12px 16px; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; border-radius: 8px; color: #64ffda; font-family: var(--font-code); font-size: 0.88rem;">
+            <i class="fa-solid fa-circle-check"></i> Message sent successfully! Anmol has received your email at iamanmol0807@gmail.com.
+          </div>
+        `;
+      }
+      form.reset();
+    } else {
+      throw new Error(result.message || "Failed to send message via Web3Forms");
+    }
+  } catch (error) {
+    console.warn("Web3Forms API call fallback:", error);
 
-  // Attempt to open Gmail Web Composer in a new tab first
-  const newTab = window.open(gmailWebUrl, '_blank');
+    // Fallback: Open Gmail Web Composer directly
+    const bodyText = `Name: ${name}\nSender Email: ${email}\n\nMessage:\n${message}`;
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=iamanmol0807@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
+    window.open(gmailUrl, '_blank');
 
-  // Fallback to mailto if popups are blocked
-  if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
-    window.location.href = mailtoUrl;
+    submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Opened Email Web App`;
+    submitBtn.style.background = "#3b82f6";
   }
 
-  alert(`Redirecting to send email to ${recipientEmail}.\n\nYour message text has also been copied to your clipboard!`);
-
   setTimeout(() => {
-    submitBtn.innerHTML = originalBtn Html;
+    submitBtn.innerHTML = originalBtnContent;
     submitBtn.style.background = "";
+    submitBtn.disabled = false;
   }, 4000);
 }
 

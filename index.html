@@ -423,7 +423,7 @@
         </div>
 
         <div class="projects-grid">
-          <!-- Project 1: Hospital Management System (DEPLOYED & CLICKABLE) -->
+          <!-- Project 1: Hospital Management System -->
           <div class="project-card glass-card clickable-card" onclick="window.open('https://anmoltx.github.io/Hospital-Management-System/', '_blank')">
             <div class="project-code-preview preview-hospital">
               <div class="code-window-bar">
@@ -467,7 +467,7 @@
             </div>
           </div>
 
-          <!-- Project 2: Tic-Tac-Toe Game (DEPLOYED & CLICKABLE) -->
+          <!-- Project 2: Tic-Tac-Toe Game -->
           <div class="project-card glass-card clickable-card" onclick="window.open('https://anmoltx.github.io/TIC-TAC-TOE-GAME/', '_blank')">
             <div class="project-code-preview preview-tictactoe">
               <div class="code-window-bar">
@@ -513,7 +513,7 @@
             </div>
           </div>
 
-          <!-- Project 3: Solar Panel Website (CLICKABLE TO GITHUB) -->
+          <!-- Project 3: Solar Panel Website -->
           <div class="project-card glass-card clickable-card" onclick="window.open('https://github.com/anmoltx', '_blank')">
             <div class="project-code-preview preview-solar">
               <div class="code-window-bar">
@@ -554,7 +554,7 @@
             </div>
           </div>
 
-          <!-- Project 4: Employee Recognition MIS (CLICKABLE TO GITHUB) -->
+          <!-- Project 4: Employee Recognition MIS -->
           <div class="project-card glass-card clickable-card" onclick="window.open('https://github.com/anmoltx', '_blank')">
             <div class="project-code-preview preview-apex">
               <div class="code-window-bar">
@@ -597,7 +597,7 @@
             </div>
           </div>
 
-          <!-- Project 5: E-commerce Web Design (CLICKABLE TO GITHUB) -->
+          <!-- Project 5: E-commerce Web Design -->
           <div class="project-card glass-card clickable-card" onclick="window.open('https://github.com/anmoltx', '_blank')">
             <div class="project-code-preview preview-figma">
               <div class="code-window-bar">
@@ -638,7 +638,7 @@
             </div>
           </div>
 
-          <!-- Project 6: Matrix Website Based on Map (CLICKABLE TO GITHUB) -->
+          <!-- Project 6: Matrix Website Based on Map -->
           <div class="project-card glass-card clickable-card" onclick="window.open('https://github.com/anmoltx', '_blank')">
             <div class="project-code-preview preview-map">
               <div class="code-window-bar">
@@ -717,7 +717,7 @@
       </div>
     </section>
 
-    <!-- CONTACT SECTION -->
+    <!-- CONTACT SECTION (INTEGRATED WITH WEB3FORMS ACCESS KEY 4e316b92-4a19-4ea0-b064-fd98c5051fde) -->
     <section id="contact" class="section-padding bg-alt">
       <div class="container">
         <div class="section-header center">
@@ -770,25 +770,27 @@
           <div class="contact-form-card glass-card">
             <h3>Send an Email Message</h3>
             <form id="contactForm" onsubmit="event.preventDefault(); handleFormSubmit();">
+              <input type="hidden" name="access_key" value="4e316b92-4a19-4ea0-b064-fd98c5051fde">
               <div class="form-group">
                 <label for="name">Your Name</label>
-                <input type="text" id="name" required placeholder="Your full name">
+                <input type="text" id="name" name="name" required placeholder="Your full name">
               </div>
               <div class="form-group">
                 <label for="email">Your Email</label>
-                <input type="email" id="email" required placeholder="your.name@example.com">
+                <input type="email" id="email" name="email" required placeholder="your.name@example.com">
               </div>
               <div class="form-group">
                 <label for="subject">Subject</label>
-                <input type="text" id="subject" required placeholder="Job Opportunity / Project Inquiry">
+                <input type="text" id="subject" name="subject" required placeholder="Job Opportunity / Project Inquiry">
               </div>
               <div class="form-group">
                 <label for="message">Message</label>
-                <textarea id="message" rows="4" required placeholder="Type your message here..."></textarea>
+                <textarea id="message" name="message" rows="4" required placeholder="Type your message here..."></textarea>
               </div>
               <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
                 Send Email Message <i class="fa-solid fa-paper-plane"></i>
               </button>
+              <div id="formStatus"></div>
             </form>
           </div>
         </div>

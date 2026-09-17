@@ -28,9 +28,9 @@ function initTypingEffect() {
   ];
 
   let roleIndex = 0;
-  let charIndex = 0;
-  let isDeleting = false;
-  let typingSpeed = 100;
+  let charIndex = roles[0].length;
+  let isDeleting = true;
+  let typingSpeed = 2000; // Pause briefly on initial default text
 
   function type() {
     const currentRole = roles[roleIndex];
@@ -47,17 +47,18 @@ function initTypingEffect() {
 
     if (!isDeleting && charIndex === currentRole.length) {
       isDeleting = true;
-      typingSpeed = 2000;
+      typingSpeed = 2000; // Hold full role for 2 seconds
     } else if (isDeleting && charIndex === 0) {
       isDeleting = false;
       roleIndex = (roleIndex + 1) % roles.length;
-      typingSpeed = 500;
+      typingSpeed = 400; // Pause before typing next role
     }
 
     setTimeout(type, typingSpeed);
   }
 
-  type();
+  // Start typing cycle
+  setTimeout(type, typingSpeed);
 }
 
 /* ==========================================================================
@@ -220,12 +221,12 @@ function initMobileDrawer() {
 }
 
 /* ==========================================================================
-   6. SCROLL REVEAL OBSERVER
+   6. SCROLL REVEAL OBSERVER (Excludes Hero Section Stats so they stay 100% visible)
    ========================================================================== */
 function initScrollObserver() {
   const observerOptions = {
-    threshold: 0.15,
-    rootMargin: "0px 0px -50px 0px"
+    threshold: 0.1,
+    rootMargin: "0px 0px -30px 0px"
   };
 
   const observer = new IntersectionObserver((entries, observer) => {
@@ -237,7 +238,8 @@ function initScrollObserver() {
     });
   }, observerOptions);
 
-  const revealElements = document.querySelectorAll('.glass-card, .timeline-item, .stat-card, .section-header');
+  // Reveal timeline items, section headers, and about section cards
+  const revealElements = document.querySelectorAll('.timeline-item, .section-header, .about-text, .skill-category, .edu-card, .contact-grid');
   revealElements.forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';
@@ -256,40 +258,29 @@ function initScrollObserver() {
 }
 
 /* ==========================================================================
-   7. STATS COUNTER ANIMATION
+   7. STATS COUNTER ANIMATION (Smooth count-up from 0 to target)
    ========================================================================== */
 function initStatsCounter() {
   const statNumbers = document.querySelectorAll('.stat-number');
-  let hasCounted = false;
 
-  const statsSection = document.querySelector('.stats-container');
-  if (!statsSection) return;
+  statNumbers.forEach(counter => {
+    const target = +counter.getAttribute('data-target');
+    const duration = 1500;
+    const increment = target / (duration / 16);
 
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && !hasCounted) {
-      hasCounted = true;
-      statNumbers.forEach(counter => {
-        const target = +counter.getAttribute('data-target');
-        const duration = 2000;
-        const increment = target / (duration / 16);
+    let current = 0;
+    const updateCounter = () => {
+      current += increment;
+      if (current < target) {
+        counter.textContent = Math.ceil(current);
+        requestAnimationFrame(updateCounter);
+      } else {
+        counter.textContent = target;
+      }
+    };
 
-        let current = 0;
-        const updateCounter = () => {
-          current += increment;
-          if (current < target) {
-            counter.textContent = Math.ceil(current);
-            requestAnimationFrame(updateCounter);
-          } else {
-            counter.textContent = target;
-          }
-        };
-
-        updateCounter();
-      });
-    }
-  }, { threshold: 0.5 });
-
-  observer.observe(statsSection);
+    updateCounter();
+  });
 }
 
 /* ==========================================================================
